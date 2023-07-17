@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Form\PostType;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,7 +18,6 @@ class PostController extends AbstractController
     public function index(PostRepository $repository): Response
     {
 
-        //There's no need to use the EntityManager
         //$repository = $em->getRepository(Post::class);
         $posts = $repository->findAll();
 
@@ -27,16 +27,26 @@ class PostController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $em){
+    public function create(Request $request, EntityManagerInterface $em, PostType $postType){
         // create a new Post
         $post = new Post();
-        $post->setTitle("My 5th title");
 
-        //entity manager
-        $em->persist($post);
-        $em->flush();
+        $form = $this->createForm(PostType::class, $post);
+        $form->handleRequest($request);
 
-        return $this->redirect($this->generateUrl('post.index'));
+        if($form->isSubmitted()){
+
+            //entity manager
+            $em->persist($post);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('post.index'));
+        }
+
+        return $this->render('post/create.html.twig', [
+            'form' => $form
+        ]);
+
     }
 
     #[Route('/show/{id}', name: 'show')]
@@ -53,16 +63,13 @@ class PostController extends AbstractController
     }
 
 
-    #[Route('/delete/{id}', name: 'delete')]
+    #[Route('/remove/{id}', name: 'delete')]
     public function remove(Post $post, EntityManagerInterface $em){
 
         $em->remove($post);
         $em->flush();
 
-        $this->addFlash(
-            'success',
-            'Post was successfully removed'
-        );
+        $this->addFlash('success', 'Post was successfully removed!');
 
         return $this->redirect($this->generateUrl('post.index'));
     }
