@@ -25,9 +25,7 @@ class PostController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/create", name="create")
-     */
+    #[Route('/create', name: 'create')]
     public function create(Request $request, EntityManagerInterface $em){
         // create a new Post
         $post = new Post();
@@ -38,9 +36,28 @@ class PostController extends AbstractController
         $em->persist($post);
         $em->flush();
 
-        return $this->render('post/create.html.twig', [
+        return new Response('You created a new post!');
+    }
+
+    #[Route('/show/{id}', name: 'show')]
+    public function show(Post $post)
+    {
+
+        //Symfony does all this work just by autowiring 'Post'
+        //$post = $em->getRepository(Post::class)->find($id);
+
+        // create the show view
+        return $this->render('post/show.html.twig', [
             'post' => $post
         ]);
-
     }
+
+
+    #[Route('/remove/{id}', name: 'remove')]
+    public function remove(){
+
+        return $this->render();
+    }
+
+
 }
