@@ -14,10 +14,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class PostController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(EntityManagerInterface $em): Response
+    public function index(PostRepository $repository): Response
     {
 
-        $repository = $em->getRepository(Post::class);
+        //There's no need to use the EntityManager
+        //$repository = $em->getRepository(Post::class);
         $posts = $repository->findAll();
 
         return $this->render('post/index.html.twig', [
@@ -29,14 +30,13 @@ class PostController extends AbstractController
     public function create(Request $request, EntityManagerInterface $em){
         // create a new Post
         $post = new Post();
-
-        $post->setTitle("My 4th title");
+        $post->setTitle("My 5th title");
 
         //entity manager
         $em->persist($post);
         $em->flush();
 
-        return new Response('You created a new post!');
+        return $this->redirect($this->generateUrl('post.index'));
     }
 
     #[Route('/show/{id}', name: 'show')]
@@ -53,10 +53,18 @@ class PostController extends AbstractController
     }
 
 
-    #[Route('/remove/{id}', name: 'remove')]
-    public function remove(){
+    #[Route('/delete/{id}', name: 'delete')]
+    public function remove(Post $post, EntityManagerInterface $em){
 
-        return $this->render();
+        $em->remove($post);
+        $em->flush();
+
+        $this->addFlash(
+            'success',
+            'Post was successfully removed'
+        );
+
+        return $this->redirect($this->generateUrl('post.index'));
     }
 
 
