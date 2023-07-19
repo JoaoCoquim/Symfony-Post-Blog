@@ -40,7 +40,7 @@ class PostController extends AbstractController
             $em->persist($post);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('post.index'));
+            return $this->redirectToRoute('post.index');
         }
 
         return $this->render('post/create.html.twig', [
@@ -71,7 +71,7 @@ class PostController extends AbstractController
 
         $this->addFlash('success', 'Post was successfully removed!');
 
-        return $this->redirect($this->generateUrl('post.index'));
+        return $this->redirectToRoute('post.index');
     }
 
 
