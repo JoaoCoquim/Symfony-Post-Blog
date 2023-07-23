@@ -7,6 +7,7 @@ use App\Form\PostType;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,6 +36,20 @@ class PostController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted()){
+
+            $file = $request->files->get('post')['attachment'];
+            /** @var UploadedFile $file */
+            if($file){
+                $filename = md5(uniqid()) . '.' . $file->guessClientExtension();
+
+                $file->move(
+                    //parameter I created in services.yaml to define upload folder
+                    $this->getParameter('uploads_dir'),
+                    $filename
+                );
+
+                $post->setImage($filename);
+            }
 
             //entity manager
             $em->persist($post);
