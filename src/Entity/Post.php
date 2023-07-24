@@ -19,7 +19,7 @@ class Post
     #[ORM\Column(length: 100)]
     private ?string $image = null;
 
-    #[ORM\ManyToOne(targetEntity: "App\Entity\Category", inversedBy: "post")]
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "post")]
     private $category;
 
     public function getId(): ?int
