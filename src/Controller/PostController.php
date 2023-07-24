@@ -68,6 +68,9 @@ class PostController extends AbstractController
     public function show(Post $post)
     {
 
+        //to use method defined by me in PostRepository, like this: show($id, PostRepository $postRepository)
+        //$post = $postRepository->findPostWithCategory($id);
+
         //Symfony does all this work just by autowiring 'Post'
         //$post = $em->getRepository(Post::class)->find($id);
 
