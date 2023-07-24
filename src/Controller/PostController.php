@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\PostRepository;
+use App\Service\FileUploader;
+use App\Service\Notification;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -28,7 +30,7 @@ class PostController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function create(Request $request, EntityManagerInterface $em, PostType $postType){
+    public function create(Request $request, EntityManagerInterface $em){
         // create a new Post
         $post = new Post();
 
@@ -37,18 +39,20 @@ class PostController extends AbstractController
 
         if($form->isSubmitted()){
 
-            $file = $request->files->get('post')['attachment'];
             /** @var UploadedFile $file */
+            $file = $request->files->get('post')['attachment'];
+
             if($file){
                 $filename = md5(uniqid()) . '.' . $file->guessClientExtension();
 
                 $file->move(
-                    //parameter I created in services.yaml to define upload folder
+                //parameter I created in services.yaml to define upload folder
                     $this->getParameter('uploads_dir'),
                     $filename
                 );
 
                 $post->setImage($filename);
+
             }
 
             //entity manager
