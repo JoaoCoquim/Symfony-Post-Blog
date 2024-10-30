@@ -47,7 +47,7 @@ You can now access the application at http://localhost:8000
 | Endpoint            | Description                     |
 |---------------------|---------------------------------|
 | `/`                 | Homepage                        |
-| `/custom/{slug?}`   | Custom page with optional slug  |
+| `/custom/{slug}`    | Custom page with optional slug  |
 | `/post/`            | List all posts                  |
 | `/post/create`      | Form to create a new post       |
 | `/post/show/{id}`   | Show post details               |
