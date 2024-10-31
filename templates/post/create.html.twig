@@ -1,7 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}My Posts!{% endblock %}
+{% block title %}Post Form{% endblock %}
 
 {% block body %}
-    {{ form(form) }}
+    {{ form_start(form) }}
+    {{ form_row(form.title) }}
+    {{ form_row(form.description) }}
+    <div>
+        {{ form_row(form.attachment) }}
+        <div id="file-name"></div>
+    </div>
+    {{ form_row(form.category) }}
+    {{ form_row(form.save) }}
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/filename-display.js') }}"></script>
 {% endblock %}

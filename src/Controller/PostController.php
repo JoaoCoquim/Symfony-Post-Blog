@@ -37,7 +37,7 @@ class PostController extends AbstractController
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
 
             /** @var UploadedFile $file */
             $file = $request->files->get('post')['attachment'];
